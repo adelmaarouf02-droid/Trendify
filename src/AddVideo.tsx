@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { db, handleFirestoreError, OperationType } from './firebase';
+import { db, handleFirestoreError, OperationType, auth } from './firebase';
 import { collection, addDoc } from "firebase/firestore";
 
 const AddVideo = () => {
   const [videoData, setVideoData] = useState({ url: '', caption: '', source: 'tiktok' });
 
   const handleUpload = async () => {
-    if(videoData.url) {
+    const trimmedUrl = videoData.url.trim();
+    if(trimmedUrl) {
       try {
         const trendsRef = collection(db, 'trends');
-        await addDoc(trendsRef, videoData);
+        const user = auth.currentUser;
+        await addDoc(trendsRef, {
+          ...videoData,
+          url: trimmedUrl,
+          user: user?.displayName || 'مستخدم_مجهول',
+          userId: user?.uid,
+          createdAt: new Date().toISOString()
+        });
         alert("تمت إضافة التريند بنجاح! 🚀");
         setVideoData({ url: '', caption: '', source: 'tiktok' });
       } catch (error) {

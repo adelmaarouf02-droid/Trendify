@@ -1,5 +1,5 @@
 {
   "name": "Trendify",
   "description": "A social media aggregator for trending videos.",
-  "requestFramePermissions": []
+  "requestFramePermissions": ["autoplay", "fullscreen"]
 }
